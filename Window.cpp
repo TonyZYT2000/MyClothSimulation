@@ -5,11 +5,15 @@
 #include "Window.h"
 
 ////////////////////////////////////////////////////////////////////////////////
+// Wire mode, 0 face 1 wire
+short Window::wireMode = 0;
+// Culling mode, 0 off 1 on
+short Window::cullingMode = 0;
 
 // Window Properties
 int Window::width;
 int Window::height;
-const char* Window::windowTitle = "CSE 169 Starter";
+const char* Window::windowTitle = "CSE 169 Project 4";
 
 // Objects to render
 Cube * Window::cube;
@@ -199,6 +203,29 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 
 		case GLFW_KEY_R:
 			resetCamera();
+			break;
+
+		// toggle show face or show wire frame
+		case GLFW_KEY_P:
+			if (wireMode == 0) {
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			}
+			else {
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			}
+			wireMode = (wireMode + 1) % 2;
+			break;
+
+		// toggle culling
+		case GLFW_KEY_C:
+			if (cullingMode == 0) {
+				glEnable(GL_CULL_FACE);
+				glCullFace(GL_BACK);
+			}
+			else {
+				glDisable(GL_CULL_FACE);
+			}
+			cullingMode = (cullingMode + 1) % 2;
 			break;
 
 		default:

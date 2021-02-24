@@ -10,6 +10,10 @@
 
 class Window
 {
+private:
+	static short wireMode;
+	static short cullingMode;
+
 public:
 	// Window Properties
 	static int width;
