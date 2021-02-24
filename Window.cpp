@@ -16,7 +16,7 @@ int Window::height;
 const char* Window::windowTitle = "CSE 169 Project 4";
 
 // Objects to render
-Cube * Window::cube;
+Land * Window::land;
 
 // Camera Properties
 Camera* Cam;
@@ -49,9 +49,7 @@ bool Window::initializeProgram() {
 
 bool Window::initializeObjects()
 {
-	// Create a cube
-	cube = new Cube();
-	//cube = new Cube(glm::vec3(-1, 0, -2), glm::vec3(1, 1, 1));
+	land = new Land(100, glm::vec3(0, -5, 0));
 
 	return true;
 }
@@ -59,7 +57,7 @@ bool Window::initializeObjects()
 void Window::cleanUp()
 {
 	// Deallcoate the objects.
-	delete cube;
+	delete land;
 
 	// Delete the shader program.
 	glDeleteProgram(shaderProgram);
@@ -165,7 +163,7 @@ void Window::displayCallback(GLFWwindow* window)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
 
 	// Render the object.
-	cube->draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
+	land->draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
 
 	// Gets events, including input such as keyboard and mouse or window resizing.
 	glfwPollEvents();

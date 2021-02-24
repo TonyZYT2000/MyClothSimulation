@@ -112,6 +112,7 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="Land.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="Tokenizer.cpp" />
@@ -121,6 +122,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="core.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="Land.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="Tokenizer.h" />

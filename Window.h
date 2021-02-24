@@ -2,7 +2,7 @@
 #define _WINDOW_H_
 
 #include "main.h"
-#include "Cube.h"
+#include "Land.h"
 #include "shader.h"
 #include "Camera.h"
 
@@ -21,7 +21,7 @@ public:
 	static const char* windowTitle;
 
 	// Objects to render
-	static Cube* cube;
+	static Land* land;
 
 	// Shader Program 
 	static GLuint shaderProgram;
