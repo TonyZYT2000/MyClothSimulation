@@ -16,7 +16,8 @@ int Window::height;
 const char* Window::windowTitle = "CSE 169 Project 4";
 
 // Objects to render
-Land * Window::land;
+Land* Window::land;
+Cloth* Window::cloth;
 
 // Camera Properties
 Camera* Cam;
@@ -49,7 +50,8 @@ bool Window::initializeProgram() {
 
 bool Window::initializeObjects()
 {
-	land = new Land(100, glm::vec3(0, -5, 0));
+	land = new Land(100, glm::vec3(0, -10, 0));
+	cloth = new Cloth(100, 100, glm::vec3(0, 0, -10), land);
 
 	return true;
 }
@@ -58,6 +60,7 @@ void Window::cleanUp()
 {
 	// Deallcoate the objects.
 	delete land;
+	delete cloth;
 
 	// Delete the shader program.
 	glDeleteProgram(shaderProgram);
@@ -155,6 +158,7 @@ void Window::idleCallback()
 	Cam->Update();
 
 	//cube->update();
+	cloth->update();
 }
 
 void Window::displayCallback(GLFWwindow* window)
@@ -164,6 +168,7 @@ void Window::displayCallback(GLFWwindow* window)
 
 	// Render the object.
 	land->draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
+	cloth->draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
 
 	// Gets events, including input such as keyboard and mouse or window resizing.
 	glfwPollEvents();
@@ -185,10 +190,6 @@ void Window::resetCamera()
 // callbacks - for Interaction 
 void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	/*
-	 * TODO: Modify below to add your key callbacks.
-	 */
-	
 	// Check for a key press.
 	if (action == GLFW_PRESS)
 	{

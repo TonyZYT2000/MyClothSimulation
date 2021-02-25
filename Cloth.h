@@ -1,34 +1,40 @@
-#ifndef _LAND_H_
-#define _LAND_H_
+#ifndef _CLOTH_H_
+#define _CLOTH_H_
 
 #include "core.h"
+#include "Land.h"
 #include "Particle.h"
+#include "Triangle.h"
+#include "SpringDamper.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class Land
-{
+class Cloth {
 private:
+	Land* land;
 	GLuint VAO;
 	GLuint VBO_positions, VBO_normals, EBO;
 
 	glm::mat4 model;
 	glm::vec3 color;
 
-	// Cube Information
+	std::vector<Particle*> particles;
+	std::vector<Triangle*> triangles;
+	std::vector<SpringDamper*> springDampers;
+
 	std::vector<glm::vec3> positions;
 	std::vector<glm::vec3> normals;
 	std::vector<unsigned int> indices;
 
-public:
-	Land(float width, glm::vec3 offset);
-	~Land();
+	void updateNormal();
+	void updateAcceleration();
 
+public:
+      Cloth(int width, int height, glm::vec3 offset, Land* land);
+      ~Cloth();
+      
 	void draw(const glm::mat4& viewProjMtx, GLuint shader);
 	void update();
-
-	bool collide(glm::vec3 pos);
-	float top();
 };
 
 ////////////////////////////////////////////////////////////////////////////////

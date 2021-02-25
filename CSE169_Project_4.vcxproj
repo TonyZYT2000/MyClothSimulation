@@ -111,21 +111,29 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Cloth.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Land.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Particle.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="SpringDamper.cpp" />
     <ClCompile Include="Tokenizer.cpp" />
+    <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Cloth.h" />
     <ClInclude Include="core.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Land.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="Particle.h" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="SpringDamper.h" />
     <ClInclude Include="Tokenizer.h" />
+    <ClInclude Include="Triangle.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>

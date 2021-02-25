@@ -5,6 +5,7 @@
 #include "Land.h"
 #include "shader.h"
 #include "Camera.h"
+#include "Cloth.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -22,6 +23,7 @@ public:
 
 	// Objects to render
 	static Land* land;
+	static Cloth* cloth;
 
 	// Shader Program 
 	static GLuint shaderProgram;
