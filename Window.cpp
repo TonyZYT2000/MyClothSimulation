@@ -159,6 +159,10 @@ void Window::idleCallback()
 
 	//cube->update();
 	cloth->update();
+	cloth->update();
+	cloth->update();
+	cloth->update();
+	cloth->update();
 }
 
 void Window::displayCallback(GLFWwindow* window)

@@ -10,11 +10,12 @@ Cloth::Cloth(int width, int height, glm::vec3 offset, Land* land) : land(land) {
 			glm::vec3 pos = glm::vec3(-0.1 * width / 2, 0.1 * height / 2, 0) +
 				glm::vec3(i) * glm::vec3(0, -0.1, 0) +
 				glm::vec3(j) * glm::vec3(0.1, 0, 0);
-			Particle* particle = new Particle(pos, glm::vec3(0, 0, 5), 0.1);
+			Particle* particle = new Particle(pos, glm::vec3(0.1, 0.1, 0.1), 0.1);
 			particles.push_back(particle);
 			positions.push_back(pos);
-			if (i == 0)
+			if (i == 0) {
 				particle->setFix();
+			}
 		}
 	}
 
@@ -105,6 +106,7 @@ Cloth::Cloth(int width, int height, glm::vec3 offset, Land* land) : land(land) {
 	}
 
 	updateNormal();
+	updateAcceleration();
 
 	for (auto particle : particles) {
 		normals.push_back(particle->normal);
@@ -188,20 +190,22 @@ void Cloth::update() {
 
 		// collision bouncing
 		if (land->collide(pos)) {
-			pos[1] = land->top() + 0.001;
+			pos[1] = land->top() + 0.01;
 			particle->position = glm::vec3(glm::inverse(model) * glm::vec4(pos, 1));
-                  glm::vec3 vClose = glm::dot(glm::vec3(0, 1, 0), particle->velocity) * glm::vec3(0, 1, 0);
-                  glm::vec3 vTangent = particle->velocity - vClose;
+
+			glm::vec3 v = glm::vec3(model * glm::vec4(particle->velocity, 0));
+                  glm::vec3 vClose = glm::dot(glm::vec3(0, 1, 0), v) * glm::vec3(0, 1, 0);
+                  glm::vec3 vTangent = v - vClose;
 
 			if (vTangent != glm::vec3(0)) {
-				vTangent = vTangent - 0.1f * glm::normalize(vTangent) * glm::length(vClose);
+				float decreaseRatio = glm::min(0.5f * glm::length(vClose), 1.0f);
+				vTangent = (1 - decreaseRatio) * vTangent;
 			}
 			else {
 				vTangent = vTangent;
 			}
 
-                  particle->velocity = -0.2f * vClose + vTangent;
-                  particle->applyAcceleration(glm::vec3(0, -9.8, 0), 0.001);
+                  particle->velocity = glm::vec3(glm::inverse(model) * glm::vec4(-0.1f * vClose + vTangent, 0));
 		}
 	}
 
@@ -257,7 +261,7 @@ void Cloth::updateNormal() {
 
 void Cloth::updateAcceleration() {
 	for (auto particle : particles) {
-		particle->acceleration = glm::vec3(0, -9.8, 0);
+		particle->acceleration = glm::vec3(glm::inverse(model) * glm::vec4(0, -9.8, 0, 0));
 	}
 	
 	for (auto springDamper : springDampers) {

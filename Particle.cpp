@@ -1,7 +1,7 @@
 #include "Particle.h"
 
 Particle::Particle(glm::vec3 pos, glm::vec3 v, float m) : mass(m), fixed(false),
-      normal(glm::vec3(0)), position(pos), velocity(v), acceleration(glm::vec3(0, -9.8, 0)) {}
+      normal(glm::vec3(0)), position(pos), velocity(v), acceleration(glm::vec3(0)) {}
 
 Particle::~Particle() {}
 
