@@ -17,22 +17,22 @@ void SpringDamper::updateAcceleration() {
             direction = glm::normalize(p2->position - p1->position);
       }
 
-      if (currLength > 1.5 * restLength) {
+      if (currLength > 1.2 * restLength) {
             glm::vec3 center = (p2->position + p1->position) / 2.0f;
             if (!p1->fixed) {
-                  p1->position = center - 0.75f * restLength * direction;
+                  p1->position = center - 0.6f * restLength * direction;
             }
             if (!p2->fixed) {
-                  p2->position = center + 0.75f * restLength * direction;
+                  p2->position = center + 0.6f * restLength * direction;
             }
       }
       else if (currLength < 0.5 * restLength) {
             glm::vec3 center = (p2->position + p1->position) / 2.0f;
             if (!p1->fixed) {
-                  p1->position = center - restLength * direction / 2.0f;
+                  p1->position = center - restLength * direction / 4.0f;
             }
             if (!p2->fixed) {
-                  p2->position = center + restLength * direction / 2.0f;
+                  p2->position = center + restLength * direction / 4.0f;
             }
       }
 

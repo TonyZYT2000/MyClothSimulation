@@ -56,7 +56,7 @@ bool Window::initializeProgram() {
 bool Window::initializeObjects()
 {
 	land = new Land(100, glm::vec3(0, -10, 0));
-	cloth = new Cloth(60, 60, glm::vec3(0, 0, -5), land);
+	cloth = new Cloth(60, 60, glm::vec3(0, 0, 0), land);
 	cloth->blow(wind);
 
 	return true;
