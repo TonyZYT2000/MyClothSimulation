@@ -12,6 +12,8 @@
 class Cloth {
 private:
 	Land* land;
+	glm::vec3 localWind;
+
 	GLuint VAO;
 	GLuint VBO_positions, VBO_normals, EBO;
 
@@ -35,6 +37,7 @@ public:
       
 	void draw(const glm::mat4& viewProjMtx, GLuint shader);
 	void update();
+	void blow(glm::vec3 wind);
 };
 
 ////////////////////////////////////////////////////////////////////////////////

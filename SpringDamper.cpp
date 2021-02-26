@@ -1,7 +1,7 @@
 #include "SpringDamper.h"
 
 SpringDamper::SpringDamper(Particle* p1, Particle* p2, float restLength) :
-      ks(5000), kd(20), p1(p1), p2(p2), restLength(restLength) {}
+      ks(2000), kd(10), p1(p1), p2(p2), restLength(restLength) {}
 
 SpringDamper::~SpringDamper() {}
 
@@ -17,9 +17,28 @@ void SpringDamper::updateAcceleration() {
             direction = glm::normalize(p2->position - p1->position);
       }
 
+      if (currLength > 1.5 * restLength) {
+            glm::vec3 center = (p2->position + p1->position) / 2.0f;
+            if (!p1->fixed) {
+                  p1->position = center - 0.75f * restLength * direction;
+            }
+            if (!p2->fixed) {
+                  p2->position = center + 0.75f * restLength * direction;
+            }
+      }
+      else if (currLength < 0.5 * restLength) {
+            glm::vec3 center = (p2->position + p1->position) / 2.0f;
+            if (!p1->fixed) {
+                  p1->position = center - restLength * direction / 2.0f;
+            }
+            if (!p2->fixed) {
+                  p2->position = center + restLength * direction / 2.0f;
+            }
+      }
+
       glm::vec3 vClose = glm::dot(p2->velocity - p1->velocity, direction) * direction;
       glm::vec3 force = ks * deltaX * direction + kd * vClose;
 
-      p1->acceleration += force / p1->mass;
-      p2->acceleration += (-force) / p2->mass;
+      p1->applyForce(force);
+      p2->applyForce(-force);
 }

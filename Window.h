@@ -12,8 +12,11 @@
 class Window
 {
 private:
-	static short wireMode;
-	static short cullingMode;
+	static bool pause;
+	static bool wireMode;
+	static bool cullingMode;
+
+	static glm::vec3 wind;
 
 public:
 	// Window Properties

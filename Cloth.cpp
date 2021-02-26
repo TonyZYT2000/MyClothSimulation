@@ -1,8 +1,11 @@
 #include "Cloth.h"
 
-Cloth::Cloth(int width, int height, glm::vec3 offset, Land* land) : land(land) {
+Cloth::Cloth(int width, int height, glm::vec3 offset, Land* land) :
+	land(land), localWind(glm::vec3(0)) {
 	// model matrix and color
 	model = glm::translate(offset) * glm::mat4(1.0f);
+	//model = glm::translate(offset) * glm::rotate(glm::radians(60.0f), glm::vec3(1, 0, 0)) * glm::mat4(1.0f);
+	//model = glm::translate(offset) * glm::rotate(glm::radians(90.0f), glm::vec3(1, 0, 0)) * glm::mat4(1.0f);
 	color = glm::vec3(1.0f, 0.1f, 0.1f); 
 
 	for (int i = 0; i < height; ++i) {
@@ -10,7 +13,7 @@ Cloth::Cloth(int width, int height, glm::vec3 offset, Land* land) : land(land) {
 			glm::vec3 pos = glm::vec3(-0.1 * width / 2, 0.1 * height / 2, 0) +
 				glm::vec3(i) * glm::vec3(0, -0.1, 0) +
 				glm::vec3(j) * glm::vec3(0.1, 0, 0);
-			Particle* particle = new Particle(pos, glm::vec3(0.1, 0.1, 0.1), 0.1);
+			Particle* particle = new Particle(pos, glm::vec3(0.1), 0.1);
 			particles.push_back(particle);
 			positions.push_back(pos);
 			if (i == 0) {
@@ -19,6 +22,7 @@ Cloth::Cloth(int width, int height, glm::vec3 offset, Land* land) : land(land) {
 		}
 	}
 
+	// create upper triangles
 	for (int i = 0; i < height - 1; ++i) {
 		for (int j = 0; j < width - 1; ++j) {
 			int index1 = i * width + j;
@@ -36,6 +40,7 @@ Cloth::Cloth(int width, int height, glm::vec3 offset, Land* land) : land(land) {
 		}
 	}
 
+	// create lower triangles
 	for (int i = 1; i < height; ++i) {
 		for (int j = 0; j < width - 1; ++j) {
 			int index1 = i * width + j;
@@ -79,7 +84,7 @@ Cloth::Cloth(int width, int height, glm::vec3 offset, Land* land) : land(land) {
 		}
 	}
 
-	// diagonal spring damper
+	// UL to LR diagonal spring damper
 	for (int i = 0; i < height - 1; ++i) {
 		for (int j = 0; j < width - 1; ++j) {
 			int index1 = i * width + j;
@@ -92,7 +97,7 @@ Cloth::Cloth(int width, int height, glm::vec3 offset, Land* land) : land(land) {
 		}
 	}
 
-	// diagonal spring damper
+	// LL to UR diagonal spring damper
 	for (int i = 1; i < height; ++i) {
 		for (int j = 0; j < width - 1; ++j) {
 			int index1 = i * width + j;
@@ -100,6 +105,58 @@ Cloth::Cloth(int width, int height, glm::vec3 offset, Land* land) : land(land) {
 			Particle* p1 = particles[index1];
 			Particle* p2 = particles[index2];
 			SpringDamper* springDamper = new SpringDamper(p1, p2, 0.1 * glm::sqrt(2));
+
+			springDampers.push_back(springDamper);
+		}
+	}
+
+	// horizontal spring damper, large
+	for (int i = 0; i < height - 2; i += 2) {
+		for (int j = 0; j < width - 2; j += 2) {
+			int index1 = i * width + j;
+			int index2 = i * width + j + 2;
+			Particle* p1 = particles[index1];
+			Particle* p2 = particles[index2];
+			SpringDamper* springDamper = new SpringDamper(p1, p2, 0.2);
+
+			springDampers.push_back(springDamper);
+		}
+	}
+
+	// vertical spring damper, large
+	for (int i = 0; i < height - 2; i += 2) {
+		for (int j = 0; j < width - 2; j += 2) {
+			int index1 = i * width + j;
+			int index2 = (i + 2) * width + j;
+			Particle* p1 = particles[index1];
+			Particle* p2 = particles[index2];
+			SpringDamper* springDamper = new SpringDamper(p1, p2, 0.2);
+
+			springDampers.push_back(springDamper);
+		}
+	}
+
+	// UL to LR diagonal spring damper, large
+	for (int i = 0; i < height - 2; i += 2) {
+		for (int j = 0; j < width - 2; j += 2) {
+			int index1 = i * width + j;
+			int index2 = (i + 2) * width + j + 2;
+			Particle* p1 = particles[index1];
+			Particle* p2 = particles[index2];
+			SpringDamper* springDamper = new SpringDamper(p1, p2, 0.2 * glm::sqrt(2));
+
+			springDampers.push_back(springDamper);
+		}
+	}
+
+	// LL to UR diagonal spring damper, large
+	for (int i = 2; i < height; i += 2) {
+		for (int j = 0; j < width - 2; j += 2) {
+			int index1 = i * width + j;
+			int index2 = (i - 2) * width + j + 2;
+			Particle* p1 = particles[index1];
+			Particle* p2 = particles[index2];
+			SpringDamper* springDamper = new SpringDamper(p1, p2, 0.2 * glm::sqrt(2));
 
 			springDampers.push_back(springDamper);
 		}
@@ -184,7 +241,7 @@ void Cloth::draw(const glm::mat4& viewProjMtx, GLuint shader)
 
 void Cloth::update() {
 	for (auto particle : particles) {
-            particle->applyAcceleration(particle->acceleration, 0.001);
+            particle->move(0.001);
 
 		glm::vec3 pos = glm::vec3(model * glm::vec4(particle->position, 1));
 
@@ -245,6 +302,10 @@ void Cloth::update() {
 	glBindVertexArray(0);
 }
 
+void Cloth::blow(glm::vec3 wind) {
+	localWind = glm::vec3(glm::inverse(model) * glm::vec4(wind, 0));
+}
+
 void Cloth::updateNormal() {
 	for (auto particle : particles) {
 		particle->normal = glm::vec3(0);
@@ -261,10 +322,15 @@ void Cloth::updateNormal() {
 
 void Cloth::updateAcceleration() {
 	for (auto particle : particles) {
-		particle->acceleration = glm::vec3(glm::inverse(model) * glm::vec4(0, -9.8, 0, 0));
+		particle->clearAcceleration();
+		particle->applyAcceleration(glm::inverse(model) * glm::vec4(0, -9.8, 0, 0));
 	}
 	
 	for (auto springDamper : springDampers) {
 		springDamper->updateAcceleration();
+	}
+
+	for (auto triangle : triangles) {
+		triangle->wind(localWind);
 	}
 }

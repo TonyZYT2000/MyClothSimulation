@@ -24,8 +24,10 @@ public:
       
       void setFix();
       void setFree();
-      void applyForce(glm::vec3 force, float step);
-      void applyAcceleration(glm::vec3 acceleration, float step);
+      void move(float step);
+      void clearAcceleration();
+      void applyForce(glm::vec3 force);
+      void applyAcceleration(glm::vec3 a);
 };
 
 ////////////////////////////////////////////////////////////////////////////////

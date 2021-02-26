@@ -5,10 +5,12 @@
 #include "Window.h"
 
 ////////////////////////////////////////////////////////////////////////////////
+// Pause indicator
+bool Window::pause = true;
 // Wire mode, 0 face 1 wire
-short Window::wireMode = 0;
+bool Window::wireMode = false;
 // Culling mode, 0 off 1 on
-short Window::cullingMode = 0;
+bool Window::cullingMode = false;
 
 // Window Properties
 int Window::width;
@@ -18,6 +20,9 @@ const char* Window::windowTitle = "CSE 169 Project 4";
 // Objects to render
 Land* Window::land;
 Cloth* Window::cloth;
+
+// Wind
+glm::vec3 Window::wind = glm::vec3(0, 0, 1);
 
 // Camera Properties
 Camera* Cam;
@@ -51,7 +56,8 @@ bool Window::initializeProgram() {
 bool Window::initializeObjects()
 {
 	land = new Land(100, glm::vec3(0, -10, 0));
-	cloth = new Cloth(100, 100, glm::vec3(0, 0, -10), land);
+	cloth = new Cloth(60, 60, glm::vec3(0, 0, -5), land);
+	cloth->blow(wind);
 
 	return true;
 }
@@ -157,12 +163,13 @@ void Window::idleCallback()
 	// Perform any updates as necessary. 
 	Cam->Update();
 
-	//cube->update();
-	cloth->update();
-	cloth->update();
-	cloth->update();
-	cloth->update();
-	cloth->update();
+	if (!pause) {
+            cloth->update();
+            cloth->update();
+            cloth->update();
+            cloth->update();
+            cloth->update();
+	}
 }
 
 void Window::displayCallback(GLFWwindow* window)
@@ -195,7 +202,7 @@ void Window::resetCamera()
 void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	// Check for a key press.
-	if (action == GLFW_PRESS)
+	if (action == GLFW_PRESS || action == GLFW_REPEAT)
 	{
 		switch (key) 
 		{
@@ -208,27 +215,50 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 			resetCamera();
 			break;
 
+		case GLFW_KEY_SPACE:
+			pause = !pause;
+			break;
+
 		// toggle show face or show wire frame
 		case GLFW_KEY_P:
-			if (wireMode == 0) {
+			wireMode = !wireMode;
+			if (wireMode) {
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			}
 			else {
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
-			wireMode = (wireMode + 1) % 2;
 			break;
 
 		// toggle culling
 		case GLFW_KEY_C:
-			if (cullingMode == 0) {
+			cullingMode = !cullingMode;
+			if (cullingMode) {
 				glEnable(GL_CULL_FACE);
 				glCullFace(GL_BACK);
 			}
 			else {
 				glDisable(GL_CULL_FACE);
 			}
-			cullingMode = (cullingMode + 1) % 2;
+			break;
+
+		// wind control
+		case GLFW_KEY_W:
+			wind += glm::vec3(0, 0, 0.5);
+			cloth->blow(wind);
+			std::cerr << "Wind Velocity: " << "(" <<
+				wind.x << ", " <<
+				wind.y << ", " <<
+				wind.z << ")" << std::endl;
+			break;
+
+		case GLFW_KEY_S:
+			wind -= glm::vec3(0, 0, 0.5);
+			cloth->blow(wind);
+			std::cerr << "Wind Velocity: " << "(" <<
+				wind.x << ", " <<
+				wind.y << ", " <<
+				wind.z << ")" << std::endl;
 			break;
 
 		default:
