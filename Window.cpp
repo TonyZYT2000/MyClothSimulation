@@ -6,7 +6,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Pause indicator
-bool Window::pause = true;
+bool Window::pause = false;
 // Wire mode, 0 face 1 wire
 bool Window::wireMode = false;
 // Culling mode, 0 off 1 on
@@ -56,7 +56,7 @@ bool Window::initializeProgram() {
 bool Window::initializeObjects()
 {
 	land = new Land(100, glm::vec3(0, -10, 0));
-	cloth = new Cloth(60, 60, glm::vec3(0, 0, 0), land);
+	cloth = new Cloth(50, 50, glm::vec3(0, 0, 0), land);
 	cloth->blow(wind);
 
 	return true;
