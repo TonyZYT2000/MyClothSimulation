@@ -1,12 +1,12 @@
 #include "Cloth.h"
 
 Cloth::Cloth(int width, int height, glm::vec3 offset, Land* land) :
-	land(land), localWind(glm::vec3(0)) {
+	width(width), height(height), land(land), translation(offset), localWind(glm::vec3(0)) {
 	// model matrix and color
 	model = glm::translate(offset) * glm::mat4(1.0f);
 	//model = glm::translate(offset) * glm::rotate(glm::radians(60.0f), glm::vec3(1, 0, 0)) * glm::mat4(1.0f);
 	//model = glm::translate(offset) * glm::rotate(glm::radians(90.0f), glm::vec3(1, 0, 0)) * glm::mat4(1.0f);
-	color = glm::vec3(1.0f, 0.1f, 0.1f); 
+	color = glm::vec3(1.0f, 0.1f, 0.1f);
 
 	for (int i = 0; i < height; ++i) {
 		for (int j = 0; j < width; ++j) {
@@ -18,6 +18,7 @@ Cloth::Cloth(int width, int height, glm::vec3 offset, Land* land) :
 			positions.push_back(pos);
 			if (i == 0) {
 				particle->setFix();
+				fixedIdx.push_back(i * width + j);
 			}
 		}
 	}
@@ -306,6 +307,25 @@ void Cloth::blow(glm::vec3 wind) {
 	localWind = glm::vec3(glm::inverse(model) * glm::vec4(wind, 0));
 }
 
+void Cloth::translate(glm::vec3 v) {
+	translation += v;
+	glm::vec3 localV = glm::vec3(glm::inverse(model) * glm::vec4(v, 0));
+	for (auto i : fixedIdx) {
+            particles[i]->position += localV;
+	}
+}
+
+void Cloth::rotate(float angle) {
+      model = glm::translate(translation) * glm::rotate(angle, glm::vec3(0, 1, 0)) *
+		glm::translate(-translation) *  model;
+}
+
+void Cloth::toggleFree() {
+	for (auto i : fixedIdx) {
+		particles[i]->fixed = !particles[i]->fixed;
+	}
+}
+
 void Cloth::updateNormal() {
 	for (auto particle : particles) {
 		particle->normal = glm::vec3(0);
@@ -334,3 +354,4 @@ void Cloth::updateAcceleration() {
 		triangle->wind(localWind);
 	}
 }
+

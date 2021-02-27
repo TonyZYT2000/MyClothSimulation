@@ -1,7 +1,7 @@
 #include "SpringDamper.h"
 
 SpringDamper::SpringDamper(Particle* p1, Particle* p2, float restLength) :
-      ks(2000), kd(10), p1(p1), p2(p2), restLength(restLength) {}
+      ks(2000), kd(12), p1(p1), p2(p2), restLength(restLength) {}
 
 SpringDamper::~SpringDamper() {}
 

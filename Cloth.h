@@ -11,8 +11,12 @@
 
 class Cloth {
 private:
+	int width;
+	int height;
 	Land* land;
 	glm::vec3 localWind;
+	glm::vec3 translation;
+	std::vector<int> fixedIdx;
 
 	GLuint VAO;
 	GLuint VBO_positions, VBO_normals, EBO;
@@ -38,6 +42,9 @@ public:
 	void draw(const glm::mat4& viewProjMtx, GLuint shader);
 	void update();
 	void blow(glm::vec3 wind);
+	void translate(glm::vec3 v);
+	void rotate(float angle);
+	void toggleFree();
 };
 
 ////////////////////////////////////////////////////////////////////////////////

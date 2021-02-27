@@ -22,7 +22,7 @@ Land* Window::land;
 Cloth* Window::cloth;
 
 // Wind
-glm::vec3 Window::wind = glm::vec3(0, 0, 1);
+glm::vec3 Window::wind = glm::vec3(0);
 
 // Camera Properties
 Camera* Cam;
@@ -169,6 +169,11 @@ void Window::idleCallback()
             cloth->update();
             cloth->update();
             cloth->update();
+            cloth->update();
+            cloth->update();
+            cloth->update();
+            cloth->update();
+            cloth->update();
 	}
 }
 
@@ -215,8 +220,13 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 			resetCamera();
 			break;
 
+		// pause playback
 		case GLFW_KEY_SPACE:
 			pause = !pause;
+			break;
+
+		case GLFW_KEY_BACKSPACE:
+			cloth->toggleFree();
 			break;
 
 		// toggle show face or show wire frame
@@ -243,7 +253,16 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 			break;
 
 		// wind control
-		case GLFW_KEY_W:
+		case GLFW_KEY_UP:
+			wind -= glm::vec3(0, 0, 0.5);
+			cloth->blow(wind);
+			std::cerr << "Wind Velocity: " << "(" <<
+				wind.x << ", " <<
+				wind.y << ", " <<
+				wind.z << ")" << std::endl;
+			break;
+
+		case GLFW_KEY_DOWN:
 			wind += glm::vec3(0, 0, 0.5);
 			cloth->blow(wind);
 			std::cerr << "Wind Velocity: " << "(" <<
@@ -252,13 +271,72 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 				wind.z << ")" << std::endl;
 			break;
 
-		case GLFW_KEY_S:
-			wind -= glm::vec3(0, 0, 0.5);
+		case GLFW_KEY_LEFT:
+			wind -= glm::vec3(0.5, 0, 0);
 			cloth->blow(wind);
 			std::cerr << "Wind Velocity: " << "(" <<
 				wind.x << ", " <<
 				wind.y << ", " <<
 				wind.z << ")" << std::endl;
+			break;
+
+		case GLFW_KEY_RIGHT:
+			wind += glm::vec3(0.5, 0, 0);
+			cloth->blow(wind);
+			std::cerr << "Wind Velocity: " << "(" <<
+				wind.x << ", " <<
+				wind.y << ", " <<
+				wind.z << ")" << std::endl;
+			break;
+
+		case GLFW_KEY_RIGHT_SHIFT:
+			wind += glm::vec3(0, 0.5, 0);
+			cloth->blow(wind);
+			std::cerr << "Wind Velocity: " << "(" <<
+				wind.x << ", " <<
+				wind.y << ", " <<
+				wind.z << ")" << std::endl;
+			break;
+
+		case GLFW_KEY_RIGHT_CONTROL:
+			wind -= glm::vec3(0, 0.5, 0);
+			cloth->blow(wind);
+			std::cerr << "Wind Velocity: " << "(" <<
+				wind.x << ", " <<
+				wind.y << ", " <<
+				wind.z << ")" << std::endl;
+			break;
+
+		case GLFW_KEY_W:
+			cloth->translate(glm::vec3(0, 0, -0.05));
+			break;
+
+		case GLFW_KEY_S:
+			cloth->translate(glm::vec3(0, 0, 0.05));
+			break;
+
+		case GLFW_KEY_A:
+			cloth->translate(glm::vec3(-0.05, 0, 0));
+			break;
+
+		case GLFW_KEY_D:
+			cloth->translate(glm::vec3(0.05, 0, 0));
+			break;
+
+		case GLFW_KEY_LEFT_SHIFT:
+			cloth->translate(glm::vec3(0, 0.05, 0));
+			break;
+
+		case GLFW_KEY_LEFT_CONTROL:
+			cloth->translate(glm::vec3(0, -0.05, 0));
+			break;
+
+		case GLFW_KEY_Q:
+			cloth->rotate(glm::radians(1.0f));
+			break;
+
+		case GLFW_KEY_E:
+			cloth->rotate(glm::radians(-1.0f));
 			break;
 
 		default:
