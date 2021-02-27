@@ -313,6 +313,7 @@ void Cloth::translate(glm::vec3 v) {
 void Cloth::rotate(float angle) {
       model = glm::translate(translation) * glm::rotate(angle, glm::vec3(0, 1, 0)) *
 		glm::translate(-translation) *  model;
+	localWind = glm::vec3(glm::inverse(model) * glm::vec4(localWind, 0));
 }
 
 void Cloth::toggleFree() {
