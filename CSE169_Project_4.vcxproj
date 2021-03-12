@@ -118,7 +118,6 @@
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="SpringDamper.cpp" />
-    <ClCompile Include="Tokenizer.cpp" />
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
@@ -132,7 +131,6 @@
     <ClInclude Include="Particle.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="SpringDamper.h" />
-    <ClInclude Include="Tokenizer.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
