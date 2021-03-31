@@ -15,7 +15,7 @@ bool Window::cullingMode = false;
 // Window Properties
 int Window::width;
 int Window::height;
-const char* Window::windowTitle = "CSE 169 Project 4";
+const char* Window::windowTitle = "My Cloth Simulation";
 
 // Objects to render
 Land* Window::land;
